@@ -257,29 +257,47 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* Profile Image Setup */
+        /* Professional Profile Image Setup */
+        .profile-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+        
         .profile-img-container {
             position: relative;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            border-radius: 2rem;
             overflow: hidden;
-            animation: morph 8s ease-in-out infinite alternate;
-            border: 4px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 0 40px rgba(29, 78, 216, 0.2);
-            z-index: 5;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 20px 40px -10px rgba(0, 0, 0, 0.7), 
+                0 0 0 8px rgba(59, 130, 246, 0.05);
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #0f172a;
         }
-        .profile-img-container::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(45deg, rgba(37, 99, 235, 0.2), transparent);
-            mix-blend-mode: overlay;
+        
+        @media (min-width: 768px) {
+            .profile-img-container {
+                border-radius: 3rem;
+            }
         }
 
-        /* Morphing Shape Animation */
-        @keyframes morph {
-            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
-            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
-            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .profile-img-container:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 
+                0 30px 60px -15px rgba(0, 0, 0, 0.8), 
+                0 0 0 12px rgba(59, 130, 246, 0.1),
+                0 0 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .profile-img-container::after {
+            content: ''; 
+            position: absolute; 
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(37, 99, 235, 0.1) 100%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
         }
 
         /* Giant Contact Icon Anim */
@@ -391,56 +409,59 @@
             </div>
 
             <!-- Image Content -->
-            <div class="order-1 md:order-2 flex justify-center reveal relative mt-10 md:mt-0">
-                <div class="profile-img-container w-64 h-64 sm:w-72 sm:h-72 md:w-[450px] md:h-[450px]">
-                    <img src="https://i.ibb.co/zhLCRS2q/1781972568604.jpg" alt="Omar Adel Heiba" class="w-full h-full object-cover">
-                </div>
-                
-                <!-- Floating Badges (Scaled for Mobile) -->
-                <!-- UI/UX Badge -->
-                <div class="absolute top-4 -right-4 md:-right-20 z-20 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_6s_infinite_ease-in-out] scale-75 md:scale-100 origin-top-right">
-                    <i class="fa-brands fa-figma text-2xl text-pink-500"></i>
-                    <div>
-                        <p class="text-[10px] text-gray-400">UI/UX Design</p>
-                        <p class="font-bold text-xs">Expert</p>
+            <div class="order-1 md:order-2 flex justify-center reveal mt-8 md:mt-0 w-full relative">
+                <!-- Wrapper guarantees structural integrity and correct stacking -->
+                <div class="profile-wrapper w-64 h-64 sm:w-72 sm:h-72 md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px]">
+                    <div class="profile-img-container w-full h-full">
+                        <img src="https://i.ibb.co/zhLCRS2q/1781972568604.jpg" alt="Omar Adel Heiba" class="w-full h-full object-cover object-top">
                     </div>
-                </div>
+                    
+                    <!-- Floating Badges (Fully Responsive) -->
+                    <!-- UI/UX Badge -->
+                    <div class="absolute -top-3 -right-2 sm:-top-4 sm:-right-6 md:top-8 md:-right-16 z-20 glass-panel px-2.5 py-2 md:px-4 md:py-3 flex items-center gap-2 animate-[float_6s_infinite_ease-in-out]">
+                        <i class="fa-brands fa-figma text-lg md:text-2xl text-pink-500"></i>
+                        <div>
+                            <p class="text-[9px] md:text-[11px] text-gray-400 leading-tight m-0">UI/UX Design</p>
+                            <p class="font-bold text-[11px] md:text-sm leading-tight m-0">Expert</p>
+                        </div>
+                    </div>
 
-                <!-- Adobe Suite Badge -->
-                <div class="absolute bottom-12 -right-8 md:-right-24 z-20 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_7s_infinite_reverse_ease-in-out] delay-100 scale-75 md:scale-100 origin-bottom-right">
-                    <div class="flex gap-1 text-sm font-bold tracking-wider">
-                        <span class="text-[#31A8FF]">Ps</span>
-                        <span class="text-[#FF9A00]">Ai</span>
-                        <span class="text-[#E878FF]">Pr</span>
+                    <!-- Adobe Suite Badge -->
+                    <div class="absolute -bottom-2 -right-3 sm:-bottom-4 sm:-right-8 md:bottom-12 md:-right-20 z-20 glass-panel px-2.5 py-2 md:px-4 md:py-3 flex items-center gap-2 animate-[float_7s_infinite_reverse_ease-in-out] delay-100">
+                        <div class="flex gap-1 text-[10px] md:text-sm font-bold tracking-wider">
+                            <span class="text-[#31A8FF]">Ps</span>
+                            <span class="text-[#FF9A00]">Ai</span>
+                            <span class="text-[#E878FF]">Pr</span>
+                        </div>
+                        <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
+                            <p class="text-[9px] md:text-[11px] text-gray-400 leading-tight m-0">Creative Suite</p>
+                            <p class="font-bold text-[11px] md:text-sm leading-tight m-0">Art Director</p>
+                        </div>
                     </div>
-                    <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
-                        <p class="text-[10px] text-gray-400">Creative Suite</p>
-                        <p class="font-bold text-xs">Art Director</p>
-                    </div>
-                </div>
 
-                <!-- Dev Stack Badge -->
-                <div class="absolute top-1/3 -left-8 md:-left-28 z-20 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_8s_infinite_ease-in-out] delay-300 scale-75 md:scale-100 origin-top-left">
-                    <div class="grid grid-cols-3 gap-x-2 gap-y-1 text-sm items-center justify-items-center">
-                        <i class="fa-brands fa-python text-blue-400"></i>
-                        <span class="font-bold text-purple-400 text-[10px]">C#</span>
-                        <i class="fa-brands fa-html5 text-orange-500"></i>
-                        <i class="fa-brands fa-css3-alt text-blue-500"></i>
-                        <i class="fa-brands fa-js text-yellow-400"></i>
-                        <i class="fa-solid fa-code text-gray-400 text-[10px]"></i>
+                    <!-- Dev Stack Badge -->
+                    <div class="absolute top-1/4 -left-3 sm:-left-6 md:top-1/3 md:-left-24 z-20 glass-panel px-2.5 py-2 md:px-4 md:py-3 flex items-center gap-2 animate-[float_8s_infinite_ease-in-out] delay-300">
+                        <div class="grid grid-cols-3 gap-x-1.5 gap-y-1 text-[10px] md:text-sm items-center justify-items-center">
+                            <i class="fa-brands fa-python text-blue-400"></i>
+                            <span class="font-bold text-purple-400 text-[8px] md:text-[10px]">C#</span>
+                            <i class="fa-brands fa-html5 text-orange-500"></i>
+                            <i class="fa-brands fa-css3-alt text-blue-500"></i>
+                            <i class="fa-brands fa-js text-yellow-400"></i>
+                            <i class="fa-solid fa-code text-gray-400 text-[8px] md:text-[10px]"></i>
+                        </div>
+                        <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
+                            <p class="text-[9px] md:text-[11px] text-gray-400 leading-tight m-0">VS Code</p>
+                            <p class="font-bold text-[11px] md:text-sm leading-tight m-0">Engineer</p>
+                        </div>
                     </div>
-                    <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
-                        <p class="text-[10px] text-gray-400">VS Code</p>
-                        <p class="font-bold text-xs">Engineer</p>
-                    </div>
-                </div>
 
-                <!-- Data Badge -->
-                <div class="absolute bottom-6 -left-6 md:-left-20 z-20 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_5s_infinite_reverse_ease-in-out] delay-500 scale-75 md:scale-100 origin-bottom-left">
-                    <i class="fa-solid fa-chart-pie text-2xl text-yellow-500"></i>
-                    <div>
-                        <p class="text-[10px] text-gray-400">Data Analytics</p>
-                        <p class="font-bold text-xs">Power BI</p>
+                    <!-- Data Badge -->
+                    <div class="absolute -bottom-4 left-0 sm:-bottom-6 sm:-left-4 md:bottom-4 md:-left-12 z-20 glass-panel px-2.5 py-2 md:px-4 md:py-3 flex items-center gap-2 animate-[float_5s_infinite_reverse_ease-in-out] delay-500">
+                        <i class="fa-solid fa-chart-pie text-lg md:text-2xl text-yellow-500"></i>
+                        <div>
+                            <p class="text-[9px] md:text-[11px] text-gray-400 leading-tight m-0">Data Analytics</p>
+                            <p class="font-bold text-[11px] md:text-sm leading-tight m-0">Power BI</p>
+                        </div>
                     </div>
                 </div>
             </div>
