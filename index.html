@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Omar Adel Heiba | Art & Data Engineer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#030712',
+                        primary: '#1d4ed8',
+                        secondary: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030712; /* Deep dark blue/black */
+            color: #ffffff;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Ambient Background & Pattern */
+        .ambient-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            background: #030712;
+            overflow: hidden;
+        }
+        .pattern-overlay {
+            position: fixed; inset: 0; z-index: -1;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        
+        /* Glow Effects including the new pulsing corner */
+        .glow-1, .glow-2, .glow-pulse {
+            position: absolute; border-radius: 50%;
+            filter: blur(150px); opacity: 0.4;
+        }
+        .glow-1 {
+            width: 70vw; height: 70vw;
+            background: radial-gradient(circle, rgba(29, 78, 216, 0.5) 0%, rgba(0,0,0,0) 70%);
+            top: -20%; left: -10%;
+            animation: float 25s infinite alternate ease-in-out;
+        }
+        .glow-2 {
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(0,0,0,0) 70%);
+            bottom: -10%; right: -10%;
+            animation: float 20s infinite alternate-reverse ease-in-out;
+        }
+        .glow-pulse {
+            width: 40vw; height: 40vw; max-width: 600px; max-height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(0,0,0,0) 70%);
+            top: -5%; right: -5%;
+            filter: blur(100px);
+            animation: pulse-glow 4s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* Logo Watermark - Made smaller and more subtle */
+        .logo-watermark {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40vw; max-width: 400px;
+            opacity: 0.015;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.05); }
+            100% { transform: translate(-5%, -2%) scale(0.95); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        .glass-panel:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(31, 41, 55, 0.7);
+        }
+        .glass-nav {
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0; transform: translateY(50px);
+            transition: all 0.9s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .reveal.active {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* 3D Laptop Mockup */
+        .laptop-container {
+            perspective: 1500px;
+            padding: 2rem 0; /* Reduced padding for mobile */
+        }
+        .laptop-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            /* Default Isometric View */
+            transform: rotateX(15deg) rotateY(-15deg) rotateZ(2deg);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .laptop-container:hover .laptop-3d {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.05);
+        }
+        /* Mirror rotation for RTL */
+        html[dir="rtl"] .laptop-3d {
+            transform: rotateX(15deg) rotateY(15deg) rotateZ(-2deg);
+        }
+        html[dir="rtl"] .laptop-container:hover .laptop-3d {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.05);
+        }
+
+        .mac-screen-frame {
+            background: #111;
+            border: 10px solid #1a1a1a;
+            border-radius: 12px 12px 0 0;
+            aspect-ratio: 16/10;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        @media (min-width: 768px) {
+            .mac-screen-frame {
+                border-width: 12px;
+                border-radius: 16px 16px 0 0;
+            }
+        }
+        .mac-camera {
+            position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 4px; background: #000; border-radius: 50%;
+            box-shadow: inset 0 0 2px rgba(255,255,255,0.2); z-index: 10;
+        }
+        @media (min-width: 768px) {
+            .mac-camera { top: -8px; width: 6px; height: 6px; }
+        }
+        .mac-screen-content {
+            width: 100%; height: 100%; background: #0f172a; position: relative;
+        }
+        .mac-screen-content img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top;
+            transition: transform 3s ease;
+        }
+        .laptop-container:hover .mac-screen-content img {
+            transform: scale(1.05);
+        }
+        .mac-overlay {
+            position: absolute; inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px;
+            opacity: 0; transition: opacity 0.4s ease; z-index: 20;
+        }
+        .laptop-container:hover .mac-overlay { opacity: 1; }
+        
+        .mac-base {
+            height: 16px;
+            background: linear-gradient(to right, #666 0%, #333 10%, #222 90%, #666 100%);
+            border-radius: 0 0 12px 12px;
+            position: relative;
+            width: 104%; left: -2%;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.8);
+            z-index: 1;
+        }
+        @media (min-width: 768px) {
+            .mac-base { height: 20px; border-radius: 0 0 16px 16px; }
+        }
+        .mac-base::after {
+            content: ''; position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 15%; height: 4px; background: #111; border-radius: 0 0 4px 4px;
+        }
+
+        /* Graphic Design Cards */
+        .graphic-card {
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .graphic-card img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        .graphic-card:hover img {
+            transform: scale(1.1);
+        }
+        .graphic-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(3, 7, 18, 0.9) 0%, rgba(3, 7, 18, 0.2) 100%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 1.5rem;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .graphic-card:hover .graphic-overlay { opacity: 1; }
+
+        /* Custom Text Gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #d8b4fe 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Profile Image Setup */
+        .profile-img-container {
+            position: relative;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            overflow: hidden;
+            animation: morph 8s ease-in-out infinite alternate;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 40px rgba(29, 78, 216, 0.2);
+            z-index: 5;
+        }
+        .profile-img-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.2), transparent);
+            mix-blend-mode: overlay;
+        }
+
+        /* Giant Contact Icon Anim */
+        .pulse-ring {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+        
+        .skill-tag {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            color: #93c5fd;
+            transition: all 0.3s ease;
+        }
+        .skill-tag:hover {
+            background: rgba(37, 99, 235, 0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-600 selection:text-white">
+
+    <!-- Backgrounds -->
+    <div class="ambient-bg">
+        <div class="glow-1"></div>
+        <div class="glow-2"></div>
+        <div class="glow-pulse"></div>
+    </div>
+    <div class="pattern-overlay"></div>
+    <img src="https://plain-eeur-prod-public.komododecks.com/202606/20/NzsLGgdrT5bGQ52aDjYz/image.png" alt="Watermark" class="logo-watermark">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300 py-3" id="navbar">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2">
+                <img src="https://plain-eeur-prod-public.komododecks.com/202606/20/NzsLGgdrT5bGQ52aDjYz/image.png" alt="Omar Logo" class="h-10 md:h-14 w-auto filter drop-shadow-[0_0_8px_rgba(59,130,246,0.6)] object-contain transition-transform hover:scale-105">
+            </a>
+            
+            <div class="hidden md:flex space-x-8 rtl:space-x-reverse items-center">
+                <a href="#home" class="text-sm font-semibold text-gray-300 hover:text-white transition" data-i18n="nav_home">Home</a>
+                <a href="#about" class="text-sm font-semibold text-gray-300 hover:text-white transition" data-i18n="nav_about">About</a>
+                <a href="#portfolio" class="text-sm font-semibold text-gray-300 hover:text-white transition" data-i18n="nav_portfolio">Portfolio</a>
+                <a href="#contact" class="text-sm font-semibold text-gray-300 hover:text-white transition" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Switcher -->
+                <button onclick="toggleLang()" class="flex items-center gap-2 bg-blue-900/30 hover:bg-blue-800/50 px-5 py-2 rounded-full border border-blue-500/30 transition group">
+                    <i class="fa-solid fa-language text-blue-400 group-hover:text-white transition text-lg"></i>
+                    <span id="lang-text" class="text-sm font-bold tracking-wide">عربي</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-2xl text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel mt-4 p-6 mx-4 flex flex-col space-y-4 text-center border border-gray-800">
+            <a href="#home" class="text-gray-300 hover:text-white transition font-semibold mobile-link" data-i18n="nav_home">Home</a>
+            <a href="#about" class="text-gray-300 hover:text-white transition font-semibold mobile-link" data-i18n="nav_about">About</a>
+            <a href="#portfolio" class="text-gray-300 hover:text-white transition font-semibold mobile-link" data-i18n="nav_portfolio">Portfolio</a>
+            <a href="#contact" class="text-gray-300 hover:text-white transition font-semibold mobile-link" data-i18n="nav_contact">Contact</a>
+            <button onclick="toggleLang()" class="bg-blue-600 text-white px-4 py-3 rounded-full w-full font-bold shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-language mr-2"></i> <span id="mobile-lang-text">التبديل للعربية</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-24 pb-12 relative px-4 md:px-6 overflow-hidden">
+        <div class="container mx-auto grid md:grid-cols-2 gap-12 items-center">
+            
+            <!-- Text Content -->
+            <div class="order-2 md:order-1 text-center md:text-start reveal rtl:md:text-right ltr:md:text-left z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/20 border border-blue-500/20 mb-6 hidden md:inline-flex">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span class="text-blue-300 text-sm font-semibold tracking-wider" data-i18n="hero_badge">Available for new projects</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 text-white leading-tight" data-i18n="hero_title">
+                    <span class="text-gradient">Omar Adel Heiba.</span>
+                </h1>
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-blue-400 leading-snug" data-i18n="hero_role">
+                    Software & Digital Transformation Engineer,<br> Art Director & Data Analyst.
+                </h2>
+                <p class="text-gray-400 text-base md:text-xl mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed font-light" data-i18n="hero_desc">
+                    Omar merges artistic vision with programming logic to transform complex ideas and data into innovative digital interfaces and automated enterprise solutions.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <a href="https://drive.google.com/file/d/19NeDzqc2NYYADvh3L267uvbvOXFxhmXj/view" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3.5 rounded-full font-bold flex items-center gap-3 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-all transform hover:-translate-y-1">
+                        <span data-i18n="btn_cv">Download CV</span> <i class="fa-solid fa-arrow-down"></i>
+                    </a>
+                    <a href="#portfolio" class="bg-transparent border border-gray-600 text-gray-300 hover:border-blue-400 hover:text-blue-400 px-6 md:px-8 py-3.5 rounded-full font-bold transition-all flex items-center gap-2">
+                        <span data-i18n="btn_work">Explore Work</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Image Content -->
+            <div class="order-1 md:order-2 flex justify-center reveal relative mt-10 md:mt-0">
+                <div class="profile-img-container w-64 h-64 sm:w-72 sm:h-72 md:w-[450px] md:h-[450px]">
+                    <img src="https://plain-eeur-prod-public.komododecks.com/202606/20/6zLHuT1J4C1uSswCwUdH/image.png" alt="Omar Adel Heiba" class="w-full h-full object-cover">
+                </div>
+                
+                <!-- Floating Badges (Scaled for Mobile) -->
+                <!-- UI/UX Badge -->
+                <div class="absolute top-0 -right-2 md:-right-8 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_6s_infinite_ease-in-out] scale-75 md:scale-100 origin-top-right">
+                    <i class="fa-brands fa-figma text-2xl text-pink-500"></i>
+                    <div>
+                        <p class="text-[10px] text-gray-400">UI/UX Design</p>
+                        <p class="font-bold text-xs">Expert</p>
+                    </div>
+                </div>
+
+                <!-- Adobe Suite Badge -->
+                <div class="absolute bottom-10 -right-4 md:-right-12 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_7s_infinite_reverse_ease-in-out] delay-100 scale-75 md:scale-100 origin-bottom-right">
+                    <div class="flex gap-1 text-sm font-bold tracking-wider">
+                        <span class="text-[#31A8FF]">Ps</span>
+                        <span class="text-[#FF9A00]">Ai</span>
+                        <span class="text-[#E878FF]">Pr</span>
+                    </div>
+                    <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
+                        <p class="text-[10px] text-gray-400">Creative Suite</p>
+                        <p class="font-bold text-xs">Art Director</p>
+                    </div>
+                </div>
+
+                <!-- Dev Stack Badge -->
+                <div class="absolute top-1/4 -left-4 md:-left-16 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_8s_infinite_ease-in-out] delay-300 scale-75 md:scale-100 origin-top-left">
+                    <div class="grid grid-cols-3 gap-x-2 gap-y-1 text-sm items-center justify-items-center">
+                        <i class="fa-brands fa-python text-blue-400"></i>
+                        <span class="font-bold text-purple-400 text-[10px]">C#</span>
+                        <i class="fa-brands fa-html5 text-orange-500"></i>
+                        <i class="fa-brands fa-css3-alt text-blue-500"></i>
+                        <i class="fa-brands fa-js text-yellow-400"></i>
+                        <i class="fa-solid fa-code text-gray-400 text-[10px]"></i>
+                    </div>
+                    <div class="border-l border-gray-600 pl-2 rtl:border-l-0 rtl:border-r rtl:pr-2 rtl:pl-0">
+                        <p class="text-[10px] text-gray-400">VS Code</p>
+                        <p class="font-bold text-xs">Engineer</p>
+                    </div>
+                </div>
+
+                <!-- Data Badge -->
+                <div class="absolute bottom-4 -left-2 md:-left-8 glass-panel px-3 py-2 flex items-center gap-2 animate-[float_5s_infinite_reverse_ease-in-out] delay-500 scale-75 md:scale-100 origin-bottom-left">
+                    <i class="fa-solid fa-chart-pie text-2xl text-yellow-500"></i>
+                    <div>
+                        <p class="text-[10px] text-gray-400">Data Analytics</p>
+                        <p class="font-bold text-xs">Power BI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative px-4 md:px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col items-center mb-16 reveal text-center">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gradient" data-i18n="about_title">About Omar</h2>
+                <div class="w-24 h-1 bg-blue-600 rounded-full"></div>
+            </div>
+            
+            <div class="glass-panel p-6 md:p-12 reveal shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                
+                <div class="grid lg:grid-cols-3 gap-12 relative z-10">
+                    <!-- Bio Text -->
+                    <div class="lg:col-span-2 space-y-6 text-gray-300 text-base md:text-lg leading-relaxed font-light" id="bio-content">
+                        <!-- Content injected via JS -->
+                    </div>
+                    
+                    <!-- Side Info & Skills -->
+                    <div class="space-y-8">
+                        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2" data-i18n="about_expertise">
+                                <i class="fa-solid fa-medal text-blue-500"></i> Key Expertise
+                            </h3>
+                            <ul class="space-y-4 text-gray-400 text-sm" id="expertise-list">
+                                <!-- Content injected via JS -->
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2" data-i18n="about_tech">
+                                <i class="fa-solid fa-layer-group text-blue-500"></i> Technical Arsenal
+                            </h3>
+                            <div class="flex flex-wrap gap-2" id="tech-tags">
+                                <!-- Tags injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24 relative px-4 md:px-6 bg-gray-900/20 border-y border-gray-800/50">
+        <div class="container mx-auto max-w-7xl">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gradient" data-i18n="portfolio_title">Portfolio & Engineering</h2>
+                <p class="text-gray-400 text-base md:text-lg" data-i18n="portfolio_subtitle">A fusion of Data Analysis and Interactive Visual Design</p>
+                <div class="w-24 h-1 bg-blue-600 mx-auto rounded-full mt-6"></div>
+            </div>
+
+            <!-- UI/UX Live Links (3D Laptops) -->
+            <div class="mb-12 flex items-center justify-center md:justify-between reveal">
+                <h3 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 text-center md:text-left rtl:md:text-right">
+                    <i class="fa-solid fa-laptop-code text-blue-500"></i> <span data-i18n="port_uiux">Live Web & Data Projects</span>
+                </h3>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-y-20 gap-x-12 mb-32" id="laptop-grid">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+            <!-- Graphic Design & PDF Portfolios -->
+            <div class="mt-32">
+                <div class="mb-12 flex items-center justify-center md:justify-between reveal">
+                    <h3 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 text-center md:text-left rtl:md:text-right">
+                        <i class="fa-solid fa-object-group text-purple-500"></i> <span data-i18n="port_graphic">Visual Identity & Print (PDFs)</span>
+                    </h3>
+                </div>
+                
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="graphic-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+                
+                <div class="mt-16 text-center reveal">
+                    <a href="https://www.linkedin.com/in/omar-adel-heiba-%E2%9C%AA-24ba8a119/details/projects/" target="_blank" class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-blue-400 px-6 py-3 rounded-full font-bold border border-gray-700 transition-all">
+                        <i class="fa-brands fa-linkedin text-xl"></i> <span data-i18n="more_projects_linkedin">View all projects on LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 relative px-4 md:px-6 overflow-hidden">
+        <div class="container mx-auto max-w-6xl relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left: Big Visual / Icon -->
+                <div class="reveal text-center lg:text-start flex flex-col items-center lg:items-start rtl:lg:items-start ltr:lg:items-start">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-gradient" data-i18n="contact_title">Let's Build Greatness</h2>
+                    <p class="text-gray-400 text-lg md:text-xl mb-12 max-w-md font-light" data-i18n="contact_text">
+                        If you are looking for someone to bridge the gap between Art and Data, feel free to reach out.
+                    </p>
+                    
+                    <!-- 3D Abstract Graphic representing connection -->
+                    <div class="relative w-48 h-48 md:w-64 md:h-64 mx-auto lg:mx-0">
+                        <div class="pulse-ring"></div>
+                        <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(37,99,235,0.5)] transform hover:scale-105 transition duration-500">
+                            <!-- New Phone Volume Icon -->
+                            <i class="fa-solid fa-phone-volume text-6xl md:text-7xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Methods -->
+                <div class="grid sm:grid-cols-2 gap-4 md:gap-6 reveal delay-100">
+                    <!-- WhatsApp EG -->
+                    <a href="https://wa.me/201144024337" target="_blank" class="glass-panel p-6 md:p-8 flex flex-col items-center text-center group hover:-translate-y-2">
+                        <div class="w-14 h-14 md:w-16 md:h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-500 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-all">
+                            <i class="fa-brands fa-whatsapp text-2xl md:text-3xl text-green-500 group-hover:text-white transition"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-bold text-white mb-1">WhatsApp (EG)</h4>
+                        <p class="text-gray-400 text-xs md:text-sm dir-ltr">+20 114 402 4337</p>
+                    </a>
+
+                    <!-- WhatsApp KSA -->
+                    <a href="https://wa.me/966504179428" target="_blank" class="glass-panel p-6 md:p-8 flex flex-col items-center text-center group hover:-translate-y-2">
+                        <div class="w-14 h-14 md:w-16 md:h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-500 group-hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-all">
+                            <i class="fa-brands fa-whatsapp text-2xl md:text-3xl text-green-500 group-hover:text-white transition"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-bold text-white mb-1">WhatsApp (KSA)</h4>
+                        <p class="text-gray-400 text-xs md:text-sm dir-ltr">+966 50 417 9428</p>
+                    </a>
+
+                    <!-- Phone Direct -->
+                    <a href="tel:+201144024337" class="glass-panel p-6 md:p-8 flex flex-col items-center text-center group hover:-translate-y-2">
+                        <div class="w-14 h-14 md:w-16 md:h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] transition-all">
+                            <i class="fa-solid fa-phone-volume text-2xl md:text-3xl text-blue-500 group-hover:text-white transition"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-bold text-white mb-1" data-i18n="direct_call">Direct Call</h4>
+                        <p class="text-gray-400 text-xs md:text-sm" data-i18n="click_to_call">Click for quick call</p>
+                    </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/omar-adel-heiba-%E2%9C%AA-24ba8a119" target="_blank" class="glass-panel p-6 md:p-8 flex flex-col items-center text-center group hover:-translate-y-2">
+                        <div class="w-14 h-14 md:w-16 md:h-16 bg-blue-700/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0077b5] group-hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] transition-all">
+                            <i class="fa-brands fa-linkedin-in text-2xl md:text-3xl text-blue-400 group-hover:text-white transition"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-bold text-white mb-1">LinkedIn</h4>
+                        <p class="text-gray-400 text-xs md:text-sm">Omar Adel</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-transparent text-center relative overflow-hidden">
+        <!-- Giant Faded Logo in background of footer -->
+        <img src="https://plain-eeur-prod-public.komododecks.com/202606/20/NzsLGgdrT5bGQ52aDjYz/image.png" alt="Omar Logo Background" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 md:w-96 opacity-[0.03] pointer-events-none">
+        
+        <div class="relative z-10 flex flex-col items-center gap-6">
+            <img src="https://plain-eeur-prod-public.komododecks.com/202606/20/NzsLGgdrT5bGQ52aDjYz/image.png" alt="Omar Logo" class="h-12 md:h-16 w-auto filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+            <p class="text-gray-500 text-xs md:text-sm font-semibold tracking-wider" id="copyrightText">
+                &copy; 2026 Omar Adel Heiba. <span data-i18n="all_rights">All rights reserved.</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- Data Definitions ---
+
+        // Projects Data (UI/UX 8 Links)
+        const uiuxProjects = [
+            { id: 'hajj', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80', title: 'Hajj Readiness Portal', subtitle: 'Euroconsult Lab', link: 'https://euroconsult119-lab.github.io/hajj-readiness-portal-euroconsult/' },
+            { id: 'mohu', img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80', title: 'MOHU Dashboards', subtitle: 'Data Visualization & UI', link: 'https://euroconsult119-lab.github.io/MOHU-Dashboards/' },
+            { id: 'quran', img: 'https://images.unsplash.com/photo-1609599006353-e629aaab315d?auto=format&fit=crop&w=800&q=80', title: 'Quran App Interface', subtitle: 'Islamic App UI', link: 'https://omaradelheiba.github.io/Quran/' },
+            { id: 'archive', img: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=800&q=80', title: 'Archive Portal', subtitle: 'Data Organization', link: 'https://euroconsult119-lab.github.io/archive/' },
+            { id: 'europrojects', img: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80', title: 'EuroProjects', subtitle: 'Project Management UI', link: 'https://euroconsult119-lab.github.io/europrojects/' },
+            { id: 'euroconsult', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80', title: 'Euroconsult Main Portal', subtitle: 'Corporate Web Design', link: 'https://euroconsult119-lab.github.io/euroconsult.net/' },
+            { id: 'dash1447', img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80', title: 'Dashboard Hajj 1447', subtitle: 'Analytics Dashboard', link: 'https://euroconsult119-lab.github.io/Dashboard-hajj1447/' },
+            { id: 'problems', img: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80', title: 'Problems Tracker', subtitle: 'Issue Management UI', link: 'https://euroconsult119-lab.github.io/problems/' },
+        ];
+
+        // Graphic Design & PDFs
+        const graphicProjects = [
+            { type: 'behance', img: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80', title: 'محفظة بيهاينس', titleEn: 'Behance Portfolio', icon: 'fa-behance', link: 'https://www.behance.net/OmarAdelHeiba' },
+            { type: 'pdf', img: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80', title: 'أمثلة UI/UX 1', titleEn: 'UI/UX Examples 1', icon: 'fa-file-pdf', link: 'https://drive.google.com/file/d/1yd96FKs70euWMXANv7OolebvcixqDEb3/view' },
+            { type: 'pdf', img: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80', title: 'أمثلة UI/UX 2', titleEn: 'UI/UX Examples 2', icon: 'fa-file-pdf', link: 'https://drive.google.com/file/d/1nBK1dGJmojrhNwNCr-L9JQbtkgS6g0nP/view' },
+            { type: 'pdf', img: 'https://images.unsplash.com/photo-1626785774625-ddc2a9314c46?auto=format&fit=crop&w=800&q=80', title: 'تصميم جرافيك 1', titleEn: 'Graphic Design 1', icon: 'fa-image', link: 'https://drive.google.com/file/d/1heYGwcjrzK12EphtNET85em1jpVV2Trq/view' },
+            { type: 'pdf', img: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff0f?auto=format&fit=crop&w=800&q=80', title: 'تصميم جرافيك 2', titleEn: 'Graphic Design 2', icon: 'fa-image', link: 'https://drive.google.com/file/d/1VpgEvNtl5C3FXUd7B7NINSpHOkRAXLyO/view' },
+            { type: 'pdf', img: 'https://images.unsplash.com/photo-1613909207039-6b173b755cc1?auto=format&fit=crop&w=800&q=80', title: 'تصميم جرافيك شامل', titleEn: 'Full Graphic Design', icon: 'fa-layer-group', link: 'https://drive.google.com/file/d/1lzbeQiPOx965DdeAt6mUksZtvkLZ_pCA/view' },
+        ];
+
+        const skillsTags = ['Adobe CC (PS, AI, PR, ID)', 'Figma', 'Adobe XD', 'Power BI', 'Advanced Excel', 'Python', 'C#', 'JavaScript', 'HTML5/CSS3', 'Esri GIS', 'Prompt Engineering', 'Systems Architecture'];
+
+        // Translations Dictionary
+        const translations = {
+            ar: {
+                nav_home: "الرئيسية", nav_about: "نبذة عن عمر", nav_portfolio: "الأعمال", nav_contact: "التواصل",
+                hero_badge: "متاح لمشاريع جديدة",
+                hero_title: `<span class="text-gradient">عمر عادل هيبة.</span>`,
+                hero_role: `مهندس برمجيات وتحول رقمي،<br> مخرج فني ومحلل نظم وبيانات.`,
+                hero_desc: "يجمع عمر بين الرؤية الفنية والمنطق البرمجي لتحويل الأفكار والبيانات المعقدة إلى واجهات رقمية مبتكرة وحلول أعمال مؤسسية مؤتمتة.",
+                btn_cv: "تحميل السيرة الذاتية", btn_work: "استكشف أعماله",
+                about_title: "نبذة عن عمر", about_expertise: "الخبرات الأساسية", about_tech: "الترسانة التقنية",
+                bio_html: `
+                    <p class="mb-4"><strong class="text-white text-xl">عمر عادل هيبة</strong></p>
+                    <p class="mb-4">عمر لا يكتفي بتصميم الواجهات البصرية فحسب؛ بل يقوم بهندستها. بخبرة تمتد لأكثر من 10 سنوات، يسد الفجوة بين البيانات المعقدة والقصص المرئية الجذابة. تكمن ميزته الفريدة في الدمج بين رؤية المخرج الفني (Art Director) ومنطق مهندس البرمجيات (Computer Scientist).</p>
+                    <p class="mb-4">حاليًا، في <strong>Euroconsult</strong>، يلعب دوراً محورياً في تحويل بيانات المشاريع المعقدة لوزارة الحج والعمرة إلى لوحات تحكم تفاعلية وعروض استراتيجية. قاد التحول الرقمي لعملياتهم الميدانية، مطوراً 8 منصات سحابية وإضافات متصفح مخصصة للعمل مع أنظمة الـ GIS. أتاح له ذلك أتمتة مسارات بيانات ضخمة وضمان أرشفة آمنة محلية بدقة 98%. هدفه الشامل هو تحويل "الأرقام الباردة" إلى "رؤى قابلة للتنفيذ" تمكّن صناع القرار.</p>
+                    <p class="mb-4"><strong>لماذا العمل مع عمر؟</strong> يجلب عقلية "حل المشكلات" لكل مشروع. سواء كان تدفق UI/UX لتطبيق جديد، أو هوية بصرية من الصفر، يضمن ألا يكون التصميم جميلاً فحسب—بل عملياً ويستجيب لأهداف العمل.</p>
+                    <p>عمر يصمم النظم البيئية الرقمية، ويحول العمليات الميدانية الفوضوية إلى حلول مؤسسية مؤتمتة متكاملة.</p>
+                `,
+                exp_list: `
+                    <li><strong class="text-white">الاستراتيجية المرئية وتصور البيانات:</strong> بناء لوحات تحكم وعروض تقديمية تبسط المعلومات المعقدة.</li>
+                    <li><strong class="text-white">الإدارة الفنية وهندسة البرمجيات:</strong> 10+ سنوات في إنشاء هويات بصرية من الشركات الناشئة إلى عمالقة الصناعة.</li>
+                    <li><strong class="text-white">تصميم UI/UX:</strong> تصميم منتجات كامل (UX Research, Wireframing, Prototyping) في Figma و Adobe XD.</li>
+                    <li><strong class="text-white">الأساس التقني:</strong> حاصل على بكالوريوس علوم الحاسب (BCS)، ملم بـ Python, C#, JS, HTML/CSS.</li>
+                `,
+                portfolio_title: "الأعمال وهندسة الواجهات", portfolio_subtitle: "مزيج من تحليل البيانات والتصميم البصري التفاعلي",
+                port_uiux: "مشاريع الويب والبيانات المباشرة", view_live: "استعراض مباشر",
+                port_graphic: "الهوية البصرية والمطبوعات (PDFs)", more_projects_linkedin: "استعرض جميع المشاريع على لينكد إن",
+                click_to_view: "انقر للاستعراض",
+                contact_title: "لنبني شيئاً عظيماً", contact_text: "إذا كنت تبحث عن شخص يسد الفجوة بين الفن والبيانات، لا تتردد في التواصل.",
+                direct_call: "اتصال مباشر", click_to_call: "انقر للاتصال السريع", all_rights: "جميع الحقوق محفوظة."
+            },
+            en: {
+                nav_home: "Home", nav_about: "About", nav_portfolio: "Portfolio", nav_contact: "Contact",
+                hero_badge: "Available for new projects",
+                hero_title: `<span class="text-gradient">Omar Adel Heiba.</span>`,
+                hero_role: `Software & Digital Transformation Engineer,<br> Art Director & Data Analyst.`,
+                hero_desc: "Omar merges artistic vision with programming logic to transform complex ideas and data into innovative digital interfaces and automated enterprise solutions.",
+                btn_cv: "Download CV", btn_work: "Explore His Work",
+                about_title: "About Omar", about_expertise: "Key Expertise", about_tech: "Technical Arsenal",
+                bio_html: `
+                    <p class="mb-4"><strong class="text-white text-xl">Omar Adel Heiba</strong></p>
+                    <p class="mb-4">Omar doesn't just design visuals; he engineers them. With over 10 years of experience, he bridges the gap between complex data and compelling visual stories. His unique edge lies in the fusion of an Art Director’s eye with a Computer Scientist’s logic.</p>
+                    <p class="mb-4">Currently, at <strong>Euroconsult</strong>, he is pivotal in transforming complex project data for the Ministry of Hajj & Umrah (KSA) into interactive dashboards and strategic presentations. He spearheaded the digital transformation of their field operations, developing 8 cloud-based platforms and custom Chrome Extensions to work with GIS. This allowed him to automate massive data pipelines and ensure secure on-premise archiving with a 98% accuracy rate. His overarching goal is to turn "cold numbers" into "actionable insights".</p>
+                    <p class="mb-4"><strong>Why work with Omar?</strong> He brings a "Problem-Solving" mindset to every project. Whether it’s a UI/UX flow for a new app or a branding identity from scratch, he ensures the design isn't just beautiful—it’s functional and responds to business goals.</p>
+                    <p>Omar architects digital ecosystems. With over a decade of experience, he transforms chaotic field operations into automated, zero-budget enterprise solutions.</p>
+                `,
+                exp_list: `
+                    <li><strong class="text-white">Visual Strategy & Data Viz:</strong> Building Dashboards and Presentations that simplify complex info.</li>
+                    <li><strong class="text-white">Art Direction & Engineering:</strong> 10+ years creating visual identities for startups & giants.</li>
+                    <li><strong class="text-white">UI/UX Design:</strong> Full-cycle design (Empathy mapping, Wireframing, Figma/XD).</li>
+                    <li><strong class="text-white">Technical Backbone:</strong> BCS holder. Well-versed in Python, C#, JS, HTML/CSS, and Prompt Engineering.</li>
+                `,
+                portfolio_title: "Portfolio & Engineering", portfolio_subtitle: "A fusion of Data Analysis and Interactive Visual Design",
+                port_uiux: "Live Web & Data Projects", view_live: "Live Preview",
+                port_graphic: "Visual Identity & Print (PDFs)", more_projects_linkedin: "View all projects on LinkedIn",
+                click_to_view: "Click to view",
+                contact_title: "Let's Build Greatness", contact_text: "If you are looking for someone to bridge the gap between Art and Data, feel free to reach out.",
+                direct_call: "Direct Call", click_to_call: "Click for quick call", all_rights: "All rights reserved."
+            }
+        };
+
+        // Default language set to English
+        let currentLang = 'en'; 
+
+        function buildPortfolio() {
+            // Build UI/UX 3D Laptops
+            const laptopContainer = document.getElementById('laptop-grid');
+            laptopContainer.innerHTML = '';
+            uiuxProjects.forEach((proj, idx) => {
+                const delay = (idx % 2) * 100;
+                laptopContainer.innerHTML += `
+                    <div class="reveal" style="transition-delay: ${delay}ms;">
+                        <div class="laptop-container">
+                            <div class="laptop-3d">
+                                <div class="mac-screen-frame">
+                                    <div class="mac-camera"></div>
+                                    <div class="mac-screen-content">
+                                        <img src="${proj.img}" alt="${proj.title}" loading="lazy">
+                                    </div>
+                                    <div class="mac-overlay">
+                                        <h4 class="text-xl md:text-2xl font-bold text-white text-center px-4">${proj.title}</h4>
+                                        <p class="text-xs md:text-sm text-gray-300 mb-2">${proj.subtitle}</p>
+                                        <a href="${proj.link}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 md:px-6 rounded-full font-bold transition flex items-center gap-2 shadow-[0_0_15px_rgba(37,99,235,0.6)] text-sm md:text-base">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="view_live">${translations[currentLang].view_live}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="mac-base"></div>
+                                <!-- Laptop Shadow (Floor Shadow) -->
+                                <div class="w-11/12 h-4 md:h-6 bg-black/80 blur-xl rounded-[100%] mx-auto mt-2 transform scale-x-110 shadow-[0_15px_30px_rgba(0,0,0,0.9)]"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Build Graphic Cards
+            const graphicContainer = document.getElementById('graphic-grid');
+            graphicContainer.innerHTML = '';
+            graphicProjects.forEach((proj, idx) => {
+                const delay = (idx % 3) * 100;
+                const title = currentLang === 'ar' ? proj.title : proj.titleEn;
+                graphicContainer.innerHTML += `
+                    <div class="reveal" style="transition-delay: ${delay}ms;">
+                        <a href="${proj.link}" target="_blank" class="graphic-card block group">
+                            <img src="${proj.img}" alt="${title}" loading="lazy">
+                            <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center border border-white/10 shadow-lg">
+                                <i class="fa-brands ${proj.icon} text-white"></i>
+                            </div>
+                            <div class="graphic-overlay">
+                                <h4 class="text-lg md:text-xl font-bold text-white mb-1">${title}</h4>
+                                <p class="text-xs md:text-sm text-blue-300 font-semibold flex items-center gap-2">
+                                    <span data-i18n="click_to_view">${translations[currentLang].click_to_view}</span> <i class="fa-solid fa-arrow-left ltr:rotate-180 transition-transform group-hover:-translate-x-2 ltr:group-hover:translate-x-2"></i>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            });
+
+            // Build Skills
+            document.getElementById('tech-tags').innerHTML = skillsTags.map(tag => `<span class="skill-tag">${tag}</span>`).join('');
+        }
+
+        function updateContent() {
+            // Update simple text
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+            // Update complex HTML parts
+            document.getElementById('bio-content').innerHTML = translations[currentLang].bio_html;
+            document.getElementById('expertise-list').innerHTML = translations[currentLang].exp_list;
+            
+            // Rebuild portfolio titles to match lang
+            buildPortfolio();
+            // Re-trigger reveal for new elements
+            setTimeout(reveal, 100); 
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const htmlTag = document.documentElement;
+            
+            htmlTag.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            htmlTag.setAttribute('lang', currentLang);
+            
+            document.getElementById('lang-text').innerText = currentLang === 'ar' ? 'English' : 'عربي';
+            document.getElementById('mobile-lang-text').innerText = currentLang === 'ar' ? 'Switch to English' : 'التبديل للعربية';
+
+            // Close mobile menu on switch
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            updateContent();
+        }
+
+        // Scroll Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", reveal);
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg', 'py-2');
+                nav.classList.remove('py-3');
+                nav.style.background = 'rgba(3, 7, 18, 0.9)';
+            } else {
+                nav.classList.remove('shadow-lg', 'py-2');
+                nav.classList.add('py-3');
+                nav.style.background = 'rgba(3, 7, 18, 0.7)';
+            }
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Initialize on load
+        window.onload = function() {
+            buildPortfolio();
+            updateContent();
+            reveal();
+            document.getElementById('copyrightText').innerHTML = `&copy; ${new Date().getFullYear()} Omar Adel Heiba. <span data-i18n="all_rights">${translations[currentLang].all_rights}</span>`;
+        };
+    </script>
+</body>
+</html>
